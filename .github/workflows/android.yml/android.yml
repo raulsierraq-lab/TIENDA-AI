@@ -1,0 +1,40 @@
+
+name: TIENDA AI Android Build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'TIENDA-AI-Android-Starter-0.1.zip'
+      - '.github/workflows/android.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar proyecto
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Extraer proyecto
+        run: unzip -o TIENDA-AI-Android-Starter-0.1.zip -d .
+
+      - name: Compilar aplicación Android
+        run: gradle assembleDebug
+
+      - name: Guardar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: TIENDA-AI-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
